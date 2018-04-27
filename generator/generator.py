@@ -286,11 +286,13 @@ def generateServer(group, rallyAutoScalingGroup):
         "baseURL=https://raw.githubusercontent.com/GloballogicPractices/amazon-cloud-formation-couchbase/master/scripts/\n",
         "wget ${baseURL}server.sh\n",
         "wget ${baseURL}util.sh\n",
-        "wget https://github.com/shamsk22/amazon-cloud-formation-couchbase/blob/master/scripts/cloudwatch-alarms.sh"
+        "wget https://github.com/shamsk22/amazon-cloud-formation-couchbase/blob/master/scripts/cloudwatch-alarms.sh\n",
+        "wget https://github.com/gargpallavi/amazon-cloud-formation-couchbase/blob/master/scripts/cb-bucket.sh\n",
         "chmod +x *.sh\n",
     ]
     if groupName==rallyAutoScalingGroup:
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} \n")
+        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} \n")
         command.append("./cloudwatch-alarms.sh ${envVar} \n")
     else:
         command.append("rallyAutoScalingGroup=")
