@@ -15,8 +15,7 @@ echo "Running cloudwatch-alarms.sh"
 
 envVar=$1
 
-if [$envVar=="Pre-prod"]
-{
+if [ "${envVar}" == "Pre-prod" ] then
   # Get instance id and name tag
   PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
   INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
@@ -117,4 +116,4 @@ if [$envVar=="Pre-prod"]
       --comparison-operator GreaterThanOrEqualToThreshold\
       --evaluation-periods 1\
       --unit Percent
-}
+fi

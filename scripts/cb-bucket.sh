@@ -56,7 +56,5 @@ then
       else
         echo "Some issue with Creating index for ${bucket}"
       fi
-
-     fi
   done
 fi
