@@ -46,6 +46,12 @@ def main():
               "Type": "String",
               "Default": "BYOL",
               "ConstraintDescription": "Select BYOL only for GLP as these are pre baked images"
+            },
+            "Env": {
+              "Description": "Pre-prod or Non-prod",
+              "Type": "String",
+              "Default": "Non-prod",
+              "ConstraintDescription": "Select this option only UAT and Stage"
             }
         },
         "Mappings": {},
@@ -273,6 +279,7 @@ def generateServer(group, rallyAutoScalingGroup):
         "echo 'Running startup script...'\n",
         "echo 'Install aws-cli...'\n"
         "yum install -y aws-cli \n"
+        "envVar=", { "Ref": "Env" }, "\n"
         "adminUsername=", { "Ref": "Username" }, "\n",
         "adminPassword=", { "Ref": "Password" }, "\n",
         "services=" + servicesParameter + "\n",
@@ -280,16 +287,18 @@ def generateServer(group, rallyAutoScalingGroup):
         "baseURL=https://raw.githubusercontent.com/GloballogicPractices/amazon-cloud-formation-couchbase/master/scripts/\n",
         "wget ${baseURL}server.sh\n",
         "wget ${baseURL}util.sh\n",
+        "wget https://github.com/shamsk22/amazon-cloud-formation-couchbase/blob/master/scripts/cloudwatch-alarms.sh"
         "chmod +x *.sh\n",
     ]
     if groupName==rallyAutoScalingGroup:
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName}\n")
+        if ${envVar}=="Pre-prod":
+            command.append("./cloudwatch-alarms.sh \n")
     else:
         command.append("rallyAutoScalingGroup=")
         command.append({ "Ref": rallyAutoScalingGroup + "AutoScalingGroup" })
         command.append("\n")
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} ${rallyAutoScalingGroup}\n")
-
     resources = {
         groupName + "AutoScalingGroup": {
             "Type": "AWS::AutoScaling::AutoScalingGroup",
