@@ -268,7 +268,6 @@ def generateServer(group, rallyAutoScalingGroup):
     nodeType = group['nodeType']
     dataDiskSize = group['dataDiskSize']
     services = group['services']
-
     servicesParameter=''
     for service in services:
         servicesParameter += service + ','
@@ -291,14 +290,14 @@ def generateServer(group, rallyAutoScalingGroup):
         "chmod +x *.sh\n",
     ]
     if groupName==rallyAutoScalingGroup:
-        command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName}\n")
-        if ${envVar}=="Pre-prod":
-            command.append("./cloudwatch-alarms.sh \n")
+        command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} \n")
+        command.append("./cloudwatch-alarms.sh ${envVar} \n")
     else:
         command.append("rallyAutoScalingGroup=")
         command.append({ "Ref": rallyAutoScalingGroup + "AutoScalingGroup" })
         command.append("\n")
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} ${rallyAutoScalingGroup}\n")
+        command.append("./cloudwatch-alarms.sh ${envVar} \n")
     resources = {
         groupName + "AutoScalingGroup": {
             "Type": "AWS::AutoScaling::AutoScalingGroup",
