@@ -42,6 +42,7 @@ if [ "${envVar}" == "Pre-prod" ] then
       exit 1
   fi
 
+fi
   # 1) Create high CPU usage metric
   ARN_OF_SNS_TOPIC="arn:aws:sns:us-west-2:953030164212:SNS"
   CPU_USAGE=70
@@ -116,4 +117,3 @@ if [ "${envVar}" == "Pre-prod" ] then
       --comparison-operator GreaterThanOrEqualToThreshold\
       --evaluation-periods 1\
       --unit Percent
-fi

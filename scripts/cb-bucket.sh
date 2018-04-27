@@ -5,7 +5,6 @@ echo "Running cb-bucket.sh"
 adminUsername=$1
 adminPassword=$2
 buckets=${buckets:-"common dcms gradebook ims lec led lpb"}
-bucket-ramsize="512"
 
 if [ -z "$3" ]
 then
@@ -38,7 +37,7 @@ then
       --cluster 127.0.0.1:8091 \
       --bucket="${bucket}" \
       --bucket-type=couchbase \
-      --bucket-ramsize=${bucket-ramsize} \
+      --bucket-ramsize=512 \
       --bucket-replica=1 \
       --wait \
       --username ${adminUsername} \
