@@ -299,6 +299,7 @@ def generateServer(group, rallyAutoScalingGroup):
         command.append({ "Ref": rallyAutoScalingGroup + "AutoScalingGroup" })
         command.append("\n")
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} ${rallyAutoScalingGroup}\n")
+        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} \n")
         command.append("./cloudwatch-alarms.sh ${envVar} \n")
     resources = {
         groupName + "AutoScalingGroup": {
