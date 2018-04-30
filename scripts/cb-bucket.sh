@@ -6,33 +6,18 @@ adminUsername=$1
 adminPassword=$2
 buckets=${buckets:-"common dcms gradebook ims lec led lpb"}
 
-if [ -z "$3" ]
-then
-  echo "This node is part of the autoscaling group that contains the rally point."
-  rallyPrivateDNS=`getrallyPrivateDNS`
-else
-  rallyAutoScalingGroup=$5
-  echo "This node is not the rally point and not part of the autoscaling group that contains the rally point."
-  echo rallyAutoScalingGroup \'$rallyAutoScalingGroup\'
-  rallyPrivateDNS=`getrallyPrivateDNS ${rallyAutoScalingGroup}`
-fi
-
-nodePrivateDNS=`curl http://169.254.169.254/latest/meta-data/hostname`
 
 echo "Using the settings:"
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
-echo rallyPrivateDNS \'$rallyPrivateDNS\'
-echo nodePrivateDNS \'$nodePrivateDNS\'
+ 
 
 cd /opt/couchbase/bin/
-
-if [[ $rallyPrivateDNS == $nodePrivateDNS ]]
-then
-
   echo "Adding buckets in the cluster"
   for bucket in ${buckets} ; do
-    echo "Configuring bucket ${bucket}..."
+    resp_code=$(curl -s -w "%{http_code}" -u ${adminUsername}:${adminPassword} http://127.0.0.1:8091/pools/default/buckets/${bucket} -o /dev/null)
+    if [ "${resp_code}" == "404" ]; then
+      echo "Configuring bucket ${bucket}..."
        /opt/couchbase/bin/couchbase-cli bucket-create \
       --cluster 127.0.0.1:8091 \
       --bucket="${bucket}" \
@@ -55,5 +40,5 @@ then
       else
         echo "Some issue with Creating index for ${bucket}"
       fi
+    fi
   done
-fi
