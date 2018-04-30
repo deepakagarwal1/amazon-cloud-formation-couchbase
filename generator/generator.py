@@ -286,7 +286,7 @@ def generateServer(group, rallyAutoScalingGroup):
         "baseURL=https://raw.githubusercontent.com/GloballogicPractices/amazon-cloud-formation-couchbase/master/scripts/\n",
         "wget ${baseURL}server.sh\n",
         "wget ${baseURL}util.sh\n",
-        "wget https://raw.githubusercontent.com/gargpallavi/amazon-cloud-formation-couchbase/master/scripts/cloudwatch-alarms.sh\n",
+        "wget https://raw.githubusercontent.com/shamsk22/amazon-cloud-formation-couchbase/master/scripts/cloudwatch-alarms.sh\n",
         "wget https://raw.githubusercontent.com/gargpallavi/amazon-cloud-formation-couchbase/master/scripts/cb-bucket.sh\n",
         "chmod +x *.sh\n",
     ]
