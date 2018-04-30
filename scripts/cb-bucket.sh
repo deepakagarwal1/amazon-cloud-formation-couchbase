@@ -10,7 +10,7 @@ buckets=${buckets:-"common dcms gradebook ims lec led lpb"}
 echo "Using the settings:"
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
- 
+
 
 cd /opt/couchbase/bin/
   echo "Adding buckets in the cluster"
