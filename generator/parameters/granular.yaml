@@ -2,7 +2,7 @@ serverVersion: 5.0.1
 #syncGatewayVersion: 1.5.1
 cluster:
   - group: data
-    nodeCount: 1
+    nodeCount: 2
     nodeType: m4.large
     dataDiskSize: 200
     services:
@@ -14,7 +14,7 @@ cluster:
     services:
       - query
   - group: index
-    nodeCount: 2
+    nodeCount: 1
     nodeType: m4.large
     dataDiskSize: 200
     services:
