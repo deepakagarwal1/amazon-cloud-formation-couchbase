@@ -32,6 +32,7 @@ cd /opt/couchbase/bin/
       else
         echo "Some issue with Creating bucket ${bucket}"
       fi
+    fi
       # Create primary index
       echo "Creating index for ${bucket}"
       /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE PRIMARY INDEX ${bucket} ON ${bucket}";
@@ -40,5 +41,5 @@ cd /opt/couchbase/bin/
       else
         echo "Some issue with Creating index for ${bucket}"
       fi
-    fi
+
   done
