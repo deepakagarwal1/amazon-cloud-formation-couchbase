@@ -94,7 +94,7 @@ def generateMappings(serverVersion):
                 "us-east-1": { "BYOL": "ami-a693a3dc", "HourlyPricing": "ami-ef95a595" },
                 "us-east-2": { "BYOL": "ami-d97441bc", "HourlyPricing": "ami-62764307" },
                 "us-west-1": { "BYOL": "ami-cf8c81af", "HourlyPricing": "ami-c08c81a0" },
-                "us-west-2": { "BYOL": "ami-269c235e", "HourlyPricing": "ami-49a11e31" },
+                "us-west-2": { "BYOL": "ami-2c8aea54", "HourlyPricing": "ami-49a11e31" },
                 "ca-central-1": { "BYOL": "ami-9822a7fc", "HourlyPricing": "ami-2e22a74a" },
                 "eu-central-1": { "BYOL": "ami-8438a1eb", "HourlyPricing": "ami-9939a0f6" },
                 "eu-west-1": { "BYOL": "ami-078aed7e", "HourlyPricing": "ami-7797f00e" },
@@ -305,7 +305,8 @@ def generateServer(group, rallyAutoScalingGroup):
         command.append("./cloudwatch-alarms.sh ${envVar} \n")
 
     if 'query' in group['services']:
-        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} \n")
+        if 'query' in group['services']:
+        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} ${stackName} \n")
 
     resources = {
         groupName + "AutoScalingGroup": {
