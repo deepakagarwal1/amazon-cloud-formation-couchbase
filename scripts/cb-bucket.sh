@@ -75,15 +75,15 @@ fi
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercoursestateIndex ON led(docType) WHERE (docType = 'learnercoursestate')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledCourseId ON led(preAssessmentStatus,(context.courseId))";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledIndex500 ON led(context.learnerId) WHERE (context.learnerId = '500')";
-   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledSubsCources ON led(docType,assetType,(context.learnerId),(scope.group)) WHERE (((docType = 'learningassets') and \
-   (assetType = 'SUBSCRIBED_COURSE')) and ((scope.group) = 'SUBSCRIBED_COURSE'))";
+   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledSubsCources ON led(docType,assetType,(context.learnerId),(scope.group)) \
+   WHERE (((docType = 'learningassets') and (assetType = 'SUBSCRIBED_COURSE')) and ((scope.group) = 'SUBSCRIBED_COURSE'))";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX subscribeCourseIndex ON led(assetType) WHERE (assetType = 'SUBSCRIBED_COURSE')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledSectionId ON led(sectionId,docType)";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercourseoutcomesArchiveIndex ON led(docType) WHERE (docType = 'learnercourseoutcomesArchive')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX instructorcoursesubscriptionIndex ON led(docType) WHERE (docType = 'instructorcoursesubscription')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledId ON led(id)";
-   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX laddiagnosticid ON led((context.LAId),(context.LAType),(scope.group)) WHERE (((context.LAType) = 'COURSE') and \
-   ((scope.group) = 'DIAGNOSTIC'))";
+   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX laddiagnosticid ON led((context.LAId),(context.LAType),(scope.group)) \
+   WHERE (((context.LAType) = 'COURSE') and ((scope.group) = 'DIAGNOSTIC'))";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercourseoutcomesIndex ON led(docType) WHERE (docType = 'learnercourseoutcomes')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledLearnerDetails ON led(docType,courseId,(instructors.instructorId)) WHERE (docType = 'learnercourseoutcomes')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledSectionIdUserId ON led(sectionId,userId,docType)";
@@ -91,8 +91,8 @@ fi
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercourseIndex ON led(docType) WHERE (docType = 'learnercourse')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledDetails ON led(docType,courseId) WHERE (docType = 'learnercourseoutcomes')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledassetTypeLearnerId ON led(assetType,learnerId)";
-   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledSubsCources_blankAssetType ON led(docType,assetType,(context.learnerId),(scope.group)) WHERE \
-    (((docType = 'learningassets') and (assetType = '')) and ((scope.group) = 'SUBSCRIBED_COURSE'))";
+   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledSubsCources_blankAssetType ON led(docType,assetType,(context.learnerId),(scope.group)) \
+    WHERE (((docType = 'learningassets') and (assetType = '')) and ((scope.group) = 'SUBSCRIBED_COURSE'))";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercourseglp1517231821348 ON led(docType,courseId) WHERE (docType = 'learnercourse')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX uniqueIdentifierIndex ON led(uniqueIdentifier)";
 
@@ -109,9 +109,10 @@ fi
 
 if echo ${stackName} | grep -q kernel ; then
   echo "Indexes of analytics Stack"
-  
+
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_id ON ams(id)";
-  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_genric ON ams(scope.category,scope.COURSE_OBJ_ID,_id,(scope.CHAPTER_OBJ_ID),(scope.CHAPTER_OBJ),(properties.DIAGNOSTIC))";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_genric ON ams(scope.category,scope.COURSE_OBJ_ID,_id,(scope.CHAPTER_OBJ_ID), \
+  (scope.CHAPTER_OBJ),(properties.DIAGNOSTIC))";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_scope_session_id ON ams((scope.SESSION_ID))";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_event ON ams(docType,corrId)";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX leamose_user_session ON leamose(docType,scope.TAGS.sessionId,ASSET_ID)";
