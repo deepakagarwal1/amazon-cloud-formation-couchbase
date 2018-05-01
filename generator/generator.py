@@ -306,7 +306,7 @@ def generateServer(group, rallyAutoScalingGroup):
 
     if 'query' in group['services']:
         if 'query' in group['services']:
-        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} ${stackName} \n")
+            command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} ${stackName} \n")
 
     resources = {
         groupName + "AutoScalingGroup": {
