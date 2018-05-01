@@ -273,6 +273,8 @@ def generateServer(group, rallyAutoScalingGroup):
         servicesParameter += service + ','
     servicesParameter=servicesParameter[:-1]
 
+    print('Using service: ' + servicesParameter)
+
     command = [
         "#!/bin/bash\n",
         "echo 'Running startup script...'\n",
@@ -292,15 +294,17 @@ def generateServer(group, rallyAutoScalingGroup):
     ]
     if groupName==rallyAutoScalingGroup:
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} \n")
-        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} \n")
         command.append("./cloudwatch-alarms.sh ${envVar} \n")
     else:
         command.append("rallyAutoScalingGroup=")
         command.append({ "Ref": rallyAutoScalingGroup + "AutoScalingGroup" })
         command.append("\n")
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} ${rallyAutoScalingGroup}\n")
-        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} \n")
         command.append("./cloudwatch-alarms.sh ${envVar} \n")
+
+    if 'query' in group['services']:
+        command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} \n")
+
     resources = {
         groupName + "AutoScalingGroup": {
             "Type": "AWS::AutoScaling::AutoScalingGroup",
