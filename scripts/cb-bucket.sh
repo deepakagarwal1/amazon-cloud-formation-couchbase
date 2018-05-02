@@ -107,7 +107,7 @@ if echo ${stackName} | grep -q eses ; then
 
 fi
 
-if echo ${stackName} | grep -q kernel ; then
+if echo ${stackName} | grep -q analytics ; then
   echo "Indexes of analytics Stack"
 
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_id ON ams(id)";
