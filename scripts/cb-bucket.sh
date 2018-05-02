@@ -111,13 +111,18 @@ if echo ${stackName} | grep -q kernel ; then
   echo "Indexes of analytics Stack"
 
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_id ON ams(id)";
-  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_genric ON ams(scope.category,scope.COURSE_OBJ_ID,_id,(scope.CHAPTER_OBJ_ID), \
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_diagnostic ON ams(scope.category,scope.COURSE_OBJ_ID,_id,(scope.CHAPTER_OBJ_ID), \
   (scope.CHAPTER_OBJ),(properties.DIAGNOSTIC))";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_practice ON ams(scope.category,scope.OBJECTIVE_OBJ_ID,scope.COURSE_OBJ_ID,_id, \
+  scope.\`GROUP\`,scope.policy,properties.PRACTICE)";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_scope_session_id ON ams((scope.SESSION_ID))";
-  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_event ON ams(docType,corrId)";
-  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX leamose_user_session ON leamose(docType,scope.TAGS.sessionId,ASSET_ID)";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_post_assessment ON ams(properties.isLastEO,scope.CHAPTER_OBJ_ID)";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_email_stats ON ams(_id,scope.COURSE_OBJ_ID)";
+
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX leamose_user ON leamose(((scope.TAGS).sessionId),(scope.ASSET_ID))";
+
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX sps_genric ON sps(scope.COURSE_ID,dependencies.enablingObjectives[0].objId)";
-  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX sps_event ON sps(docType,corrId)";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX sps_events_publish ON sps(docType,(scope.COURSE_ID))";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX sps_id ON sps(id)";
 
 fi
