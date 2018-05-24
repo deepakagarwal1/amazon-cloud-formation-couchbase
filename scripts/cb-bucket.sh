@@ -70,6 +70,7 @@ fi
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX lecGetCourse ON lec(assetType) WHERE (assetType = 'COURSE')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX lecIndexM0 ON lec(context.LAId) WHERE (context.LAId = 'Squires-M0')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX lecId ON lec(id)";
+   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX lecLAID ON lec((context.LAId))";
 
    echo "Adding index for led bucket"
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercoursestateIndex ON led(docType) WHERE (docType = 'learnercoursestate')";
@@ -95,6 +96,7 @@ fi
     WHERE (((docType = 'learningassets') and (assetType = '')) and ((scope.\`group\`) = 'SUBSCRIBED_COURSE'))";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercourseglp1517231821348 ON led(docType,courseId) WHERE (docType = 'learnercourse')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX uniqueIdentifierIndex ON led(uniqueIdentifier)";
+   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledLAID ON led((context.LAId))";
 
    echo "Adding index for lpb bucket"
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX lpbDocTypeLearningAssets ON lpb(docType) WHERE (docType = 'learningassets')";
@@ -104,7 +106,7 @@ fi
 if echo ${stackName} | grep -q eses ; then
   echo "Indexes in eses Stack"
  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX iamidglpUserId ON iam(id,glpUserId)";
-
+ /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX glpUserId ON iam(glpUserId)";
 fi
 
 if echo ${stackName} | grep -q analytics ; then
@@ -115,14 +117,26 @@ if echo ${stackName} | grep -q analytics ; then
   (scope.CHAPTER_OBJ),(properties.DIAGNOSTIC))";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_practice ON ams(scope.category,scope.OBJECTIVE_OBJ_ID,scope.COURSE_OBJ_ID,_id, \
   scope.\`GROUP\`,scope.policy,properties.PRACTICE)";
-  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_scope_session_id ON ams((scope.SESSION_ID))";
-  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_post_assessment ON ams(properties.isLastEO,scope.CHAPTER_OBJ_ID)";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_email_stats ON ams(_id,scope.COURSE_OBJ_ID)";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_post_assessment_1 ON ams((properties.isLastEO),(scope.CHAPTER_OBJ_ID))";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_post_assessment_2 ON ams((scope.category),(scope.CHAPTER_OBJ_ID)) ";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ams_scope_session_id ON ams(scope.SESSION_ID,((properties.assetRefs).ASSET_ID), \
+  (properties.result))";
 
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX leamose_id ON leamose(id)";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX leamose_user ON leamose(((scope.TAGS).sessionId),(scope.ASSET_ID))";
+
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX pls_id ON pls(id)";
+
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX rms_id ON rms(id)";
 
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX sps_genric ON sps(scope.COURSE_ID,dependencies.enablingObjectives[0].objId)";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX sps_events_publish ON sps(docType,(scope.COURSE_ID))";
   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX sps_id ON sps(id)";
+
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX tot_id ON tot(id)";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX tot_course_asset_idx ON tot((scope.ASSET_ID),(scope.COURSE_ID))";
+  /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX tot_course_learner_asset_idx ON tot(scope.ASSET_ID,scope.COURSE_ID,scope.ACTOR_ID)";
+
 
 fi

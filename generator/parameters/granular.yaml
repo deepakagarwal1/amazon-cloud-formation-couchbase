@@ -3,20 +3,20 @@ serverVersion: 5.0.1
 cluster:
   - group: data
     nodeCount: 2
-    nodeType: m4.large
-    dataDiskSize: 200
+    nodeType: m4.2xlarge
+    dataDiskSize: 100
     services:
       - data
   - group: query
     nodeCount: 1
-    nodeType: m4.large
-    dataDiskSize: 5
+    nodeType: c5.4xlarge
+    dataDiskSize: 50
     services:
       - query
   - group: index
-    nodeCount: 1
-    nodeType: m4.large
-    dataDiskSize: 200
+    nodeCount: 2
+    nodeType: r4.2xlarge
+    dataDiskSize: 50
     services:
       - index
   # - group: fts
