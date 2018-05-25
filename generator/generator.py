@@ -167,7 +167,9 @@ def generateMiscResources():
                                     "ec2:DescribeTags",
                                     "autoscaling:DescribeAutoScalingGroups",
                                     "cloudwatch:PutDashboard",
-                                    "cloudwatch:PutMetricAlarm"
+                                    "cloudwatch:PutMetricAlarm",
+                                    "s3:Get*",
+                                    "s3:List*"
                             ],
                             "Resource": "*"
                         }]
@@ -291,7 +293,7 @@ def generateServer(group, rallyAutoScalingGroup):
         "wget ${baseURL}server.sh\n",
         "wget ${baseURL}util.sh\n",
         "wget https://raw.githubusercontent.com/shamsk22/amazon-cloud-formation-couchbase/master/scripts/cloudwatch-alarms.sh\n",
-        "wget https://raw.githubusercontent.com/gargpallavi/amazon-cloud-formation-couchbase/master/scripts/cb-bucket.sh\n",
+        "aws s3 cp s3://glp-cb-data/cb-index/cb-bucket.sh /\n",
         "chmod +x *.sh\n",
     ]
     if groupName==rallyAutoScalingGroup:
