@@ -9,11 +9,11 @@ cluster:
       - data
       - query
       - index
-  - group: group2
-    nodeCount: 3
-    nodeType: m4.4xlarge
-    dataDiskSize: 100
-    services:
-      - query
-      - index
-      - fts
+#  - group: group2
+#    nodeCount: 3
+#    nodeType: m4.4xlarge
+#    dataDiskSize: 100
+#    services:
+#      - query
+#      - index
+#      - fts

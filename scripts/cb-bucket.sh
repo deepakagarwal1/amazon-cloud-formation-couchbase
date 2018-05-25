@@ -75,6 +75,7 @@ fi
    echo "Adding index for led bucket"
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX learnercoursestateIndex ON led(docType) WHERE (docType = 'learnercoursestate')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledCourseId ON led(preAssessmentStatus,(context.courseId))";
+   /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledDocTypeCourseId ON led(docType,courseId)";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledIndex500 ON led(context.learnerId) WHERE (context.learnerId = '500')";
    /opt/couchbase/bin/cbq -u ${adminUsername} -p ${adminPassword} --script="CREATE INDEX ledSubsCources ON led(docType,assetType,(context.learnerId),(scope.\`group\`)) \
    WHERE (((docType = 'learningassets') and (assetType = 'SUBSCRIBED_COURSE')) and ((scope.\`group\`) = 'SUBSCRIBED_COURSE'))";
