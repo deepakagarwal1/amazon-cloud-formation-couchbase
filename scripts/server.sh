@@ -34,6 +34,7 @@ instanceID=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/doc
 
 nodePrivateDNS=`curl http://169.254.169.254/latest/meta-data/hostname`
 
+
 echo "Using the settings:"
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
@@ -89,6 +90,8 @@ then
     --cluster-index-ramsize=$indexRAM \
     --services=${services}
 else
+  sudo -- sh -c "echo $(echo "$rallyPrivateDNS" | cut -d '-' -f 2,3,4,5|tr '-' '.'|cut -d '.' -f 1,2,3,4) $rallyPrivateDNS >> /etc/hosts"
+
   echo "Running couchbase-cli server-add"
   output=""
   while [[ $output != "Server $nodePrivateDNS:8091 added" && ! $output =~ "Node is already part of cluster." ]]
