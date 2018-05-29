@@ -91,6 +91,7 @@ then
     --services=${services}
 else
   sudo -- sh -c "echo $(echo "$rallyPrivateDNS" | cut -d '-' -f 2,3,4,5|tr '-' '.'|cut -d '.' -f 1,2,3,4) $rallyPrivateDNS >> /etc/hosts"
+  sudo -- sh -c "echo $(echo "$nodePrivateDNS" | cut -d '-' -f 2,3,4,5|tr '-' '.'|cut -d '.' -f 1,2,3,4) $nodePrivateDNS >> /etc/hosts"
 
   echo "Running couchbase-cli server-add"
   output=""
