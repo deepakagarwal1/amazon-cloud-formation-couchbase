@@ -289,7 +289,7 @@ def generateServer(group, rallyAutoScalingGroup):
         "adminPassword=", { "Ref": "Password" }, "\n",
         "services=" + servicesParameter + "\n",
         "stackName=", { "Ref": "AWS::StackName" }, "\n",
-        "baseURL=https://raw.githubusercontent.com/GloballogicPractices/amazon-cloud-formation-couchbase/master/scripts/\n",
+        "baseURL=https://raw.githubusercontent.com/gargpallavi/amazon-cloud-formation-couchbase/master/scripts/\n",
         "wget ${baseURL}server.sh\n",
         "wget ${baseURL}util.sh\n",
         "wget https://raw.githubusercontent.com/shamsk22/amazon-cloud-formation-couchbase/master/scripts/cloudwatch-alarms.sh\n",
