@@ -32,7 +32,7 @@ instanceID=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/doc
   | jq '.instanceId' \
   | sed 's/^"\(.*\)"$/\1/' )
 
-nodePrivateDNS=`curl http://169.254.169.254/latest/meta-data/hostname`
+nodePrivateDNS=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 
 
 echo "Using the settings:"
