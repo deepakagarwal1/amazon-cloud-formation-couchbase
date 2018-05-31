@@ -169,7 +169,11 @@ def generateMiscResources():
                                     "cloudwatch:PutDashboard",
                                     "cloudwatch:PutMetricAlarm",
                                     "s3:Get*",
-                                    "s3:List*"
+                                    "s3:List*",
+                                    "ec2:CreateSnapshot",
+                                    "ec2:DeleteSnapshot",
+                                    "ec2:DescribeSnapshots",
+                                    "ec2:DescribeVolumes"
                             ],
                             "Resource": "*"
                         }]
@@ -293,18 +297,23 @@ def generateServer(group, rallyAutoScalingGroup):
         "wget ${baseURL}server.sh\n",
         "wget ${baseURL}util.sh\n",
         "wget https://raw.githubusercontent.com/shamsk22/amazon-cloud-formation-couchbase/master/scripts/cloudwatch-alarms.sh\n",
-        "aws s3 cp s3://glp-cb-data/cb-index/cb-bucket.sh /\n",
+        "aws s3 cp s3://glp-cb-data/cb-index/cb-bucket.sh .\n",
+        "wget https://raw.githubusercontent.com/shamsk22/amazon-cloud-formation-couchbase/master/scripts/ebs-snapshot.sh\n"
         "chmod +x *.sh\n",
+        "echo \"Adding ebs-snapshot.sh to crontab\"\n",
+        "echo \"0 1 * * * root /bin/bash /ebs-snapshot.sh\" >> /etc/crontab\n",
     ]
     if groupName==rallyAutoScalingGroup:
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} \n")
         command.append("./cloudwatch-alarms.sh ${envVar} \n")
+        command.append("./ebs-snapshot.sh \n")
     else:
         command.append("rallyAutoScalingGroup=")
         command.append({ "Ref": rallyAutoScalingGroup + "AutoScalingGroup" })
         command.append("\n")
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} ${rallyAutoScalingGroup}\n")
         command.append("./cloudwatch-alarms.sh ${envVar} \n")
+        command.append("./ebs-snapshot.sh \n")
 
     if 'query' in group['services']:
         if 'query' in group['services']:
