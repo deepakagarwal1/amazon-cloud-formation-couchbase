@@ -78,7 +78,7 @@ done
 if [[ $rallyPrivateDNS == $nodePrivateDNS ]]
 then
   totalRAM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-  dataRAM=$((50 * $totalRAM / 100000))
+  dataRAM=$((75 * $totalRAM / 100000))
   indexRAM=$((25 * $totalRAM / 100000))
 
   echo "Running couchbase-cli cluster-init"
