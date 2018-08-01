@@ -2,21 +2,21 @@ serverVersion: 5.0.1
 #syncGatewayVersion: 1.5.1
 cluster:
   - group: data
-    nodeCount: 2
+    nodeCount: 1
     nodeType: m4.4xlarge
-    dataDiskSize: 200
+    dataDiskSize: 100
     services:
       - data
   - group: query
     nodeCount: 1
     nodeType: m4.4xlarge
-    dataDiskSize: 5
+    dataDiskSize: 50
     services:
       - query
   - group: index
-    nodeCount: 2
+    nodeCount: 1
     nodeType: m4.4xlarge
-    dataDiskSize: 200
+    dataDiskSize: 50
     services:
       - index
   # - group: fts
