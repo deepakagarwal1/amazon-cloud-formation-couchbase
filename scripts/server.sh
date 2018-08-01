@@ -10,7 +10,7 @@ stackName=$4
 source util.sh
 formatDataDisk
 
-yum -y update
+#yum -y update
 yum -y install jq
 
 if [ -z "$5" ]
@@ -82,7 +82,7 @@ then
   indexRAM=$((25 * $totalRAM / 100000))
 
   echo "--------------"
-  
+
   echo "dataRAM = $dataRAM"
   echo "indexRAM = $indexRAM"
 
