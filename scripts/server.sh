@@ -10,7 +10,7 @@ stackName=$4
 source util.sh
 formatDataDisk
 
-#yum -y update
+yum -y --exclude=couchbase-server\* update
 yum -y install jq
 
 if [ -z "$5" ]
