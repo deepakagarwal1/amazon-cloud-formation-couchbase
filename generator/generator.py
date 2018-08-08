@@ -46,6 +46,12 @@ def main():
               "Type": "String",
               "Default": "BYOL",
               "ConstraintDescription": "Select BYOL only for GLP as these are pre baked images"
+            },
+            "Env": {
+              "Description": "Pre-prod or Non-prod",
+              "Type": "String",
+              "Default": "Non-prod",
+              "ConstraintDescription": "Select this option only UAT and Stage"
             }
         },
         "Mappings": {},
@@ -87,14 +93,14 @@ def generateMappings(serverVersion):
             "5.0.1": {
                 "us-east-1": { "BYOL": "ami-a693a3dc", "HourlyPricing": "ami-ef95a595" },
                 "us-east-2": { "BYOL": "ami-d97441bc", "HourlyPricing": "ami-62764307" },
-                "us-west-1": { "BYOL": "ami-be745cdb", "HourlyPricing": "ami-be745cdb" },
-                "us-west-2": { "BYOL": "ami-2be94853", "HourlyPricing": "ami-2be94853" },
+                "us-west-1": { "BYOL": "ami-cf8c81af", "HourlyPricing": "ami-c08c81a0" },
+                "us-west-2": { "BYOL": "ami-2c8aea54", "HourlyPricing": "ami-49a11e31" },
                 "ca-central-1": { "BYOL": "ami-9822a7fc", "HourlyPricing": "ami-2e22a74a" },
                 "eu-central-1": { "BYOL": "ami-8438a1eb", "HourlyPricing": "ami-9939a0f6" },
                 "eu-west-1": { "BYOL": "ami-078aed7e", "HourlyPricing": "ami-7797f00e" },
                 "eu-west-2": { "BYOL": "ami-dd455fb9", "HourlyPricing": "ami-be7b61da" },
                 "eu-west-3": { "BYOL": "ami-d5dd6ba8", "HourlyPricing": "ami-5bc77126" },
-                "ap-southeast-1": { "BYOL": "ami-33ec944f", "HourlyPricing": "ami-13eb936f" },
+                "ap-southeast-1": { "BYOL": "ami-7a043906", "HourlyPricing": "ami-13eb936f" },
                 "ap-southeast-2": { "BYOL": "ami-8910eeeb", "HourlyPricing": "ami-ec11ef8e" },
                 "ap-south-1": { "BYOL": "aami-0d8ddc62", "HourlyPricing": "ami-5db1e032" },
                 "ap-northeast-1": { "BYOL": "ami-b0e489d6", "HourlyPricing": "ami-47e48921" },
@@ -156,12 +162,18 @@ def generateMiscResources():
                                     "ec2:Describe*",
                                     "autoscaling:DescribeAutoScalingGroups",
                                     "cloudwatch:PutMetricData",
-                                    "cloudwatch:PutDashboard",
-                                    "cloudwatch:PutMetricAlarm",
                                     "cloudwatch:GetMetricStatistics",
                                     "cloudwatch:ListMetrics",
                                     "ec2:DescribeTags",
-                                    "autoscaling:DescribeAutoScalingGroups"
+                                    "autoscaling:DescribeAutoScalingGroups",
+                                    "cloudwatch:PutDashboard",
+                                    "cloudwatch:PutMetricAlarm",
+                                    "s3:Get*",
+                                    "s3:List*",
+                                    "ec2:CreateSnapshot",
+                                    "ec2:DeleteSnapshot",
+                                    "ec2:DescribeSnapshots",
+                                    "ec2:DescribeVolumes"
                             ],
                             "Resource": "*"
                         }]
@@ -264,33 +276,48 @@ def generateServer(group, rallyAutoScalingGroup):
     nodeType = group['nodeType']
     dataDiskSize = group['dataDiskSize']
     services = group['services']
-
     servicesParameter=''
     for service in services:
         servicesParameter += service + ','
     servicesParameter=servicesParameter[:-1]
+
+    print('Using service: ' + servicesParameter)
 
     command = [
         "#!/bin/bash\n",
         "echo 'Running startup script...'\n",
         "echo 'Install aws-cli...'\n"
         "yum install -y aws-cli \n"
+        "envVar=", { "Ref": "Env" }, "\n"
         "adminUsername=", { "Ref": "Username" }, "\n",
         "adminPassword=", { "Ref": "Password" }, "\n",
         "services=" + servicesParameter + "\n",
         "stackName=", { "Ref": "AWS::StackName" }, "\n",
-        "baseURL=https://raw.githubusercontent.com/GloballogicPractices/amazon-cloud-formation-couchbase/master/scripts/\n",
+        "baseURL=https://raw.githubusercontent.com/gargpallavi/amazon-cloud-formation-couchbase/master/scripts/\n",
         "wget ${baseURL}server.sh\n",
         "wget ${baseURL}util.sh\n",
+        "wget https://raw.githubusercontent.com/shamsk22/amazon-cloud-formation-couchbase/master/scripts/cloudwatch-alarms.sh\n",
+        "aws s3 cp s3://glp-cb-data/cb-index/cb-bucket.sh .\n",
+        "wget https://raw.githubusercontent.com/shamsk22/amazon-cloud-formation-couchbase/master/scripts/ebs-snapshot.sh\n"
         "chmod +x *.sh\n",
+        "echo \"Adding ebs-snapshot.sh to crontab\"\n",
+        "echo \"0 1 * * * root /bin/bash /ebs-snapshot.sh\" >> /etc/crontab\n",
     ]
     if groupName==rallyAutoScalingGroup:
-        command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName}\n")
+        command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} \n")
+        command.append("./cloudwatch-alarms.sh ${envVar} \n")
+        command.append("./ebs-snapshot.sh \n")
     else:
         command.append("rallyAutoScalingGroup=")
         command.append({ "Ref": rallyAutoScalingGroup + "AutoScalingGroup" })
         command.append("\n")
         command.append("./server.sh ${adminUsername} ${adminPassword} ${services} ${stackName} ${rallyAutoScalingGroup}\n")
+        command.append("./cloudwatch-alarms.sh ${envVar} \n")
+        command.append("./ebs-snapshot.sh \n")
+
+    if 'query' in group['services']:
+        if 'query' in group['services']:
+            command.append("./cb-bucket.sh ${adminUsername} ${adminPassword} ${stackName} \n")
 
     resources = {
         groupName + "AutoScalingGroup": {
