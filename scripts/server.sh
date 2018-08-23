@@ -10,7 +10,7 @@ stackName=$4
 source util.sh
 formatDataDisk
 
-yum -y update
+yum -y  update
 yum -y install jq
 
 if [ -z "$5" ]
@@ -32,7 +32,8 @@ instanceID=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/doc
   | jq '.instanceId' \
   | sed 's/^"\(.*\)"$/\1/' )
 
-nodePrivateDNS=`curl http://169.254.169.254/latest/meta-data/hostname`
+nodePrivateDNS=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
+
 
 echo "Using the settings:"
 echo adminUsername \'$adminUsername\'
@@ -77,8 +78,15 @@ done
 if [[ $rallyPrivateDNS == $nodePrivateDNS ]]
 then
   totalRAM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-  dataRAM=$((50 * $totalRAM / 100000))
+  dataRAM=$((60 * $totalRAM / 100000))
   indexRAM=$((25 * $totalRAM / 100000))
+
+  echo "--------------"
+
+  echo "dataRAM = $dataRAM"
+  echo "indexRAM = $indexRAM"
+
+  echo "--------------"
 
   echo "Running couchbase-cli cluster-init"
   ./couchbase-cli cluster-init \
@@ -89,6 +97,9 @@ then
     --cluster-index-ramsize=$indexRAM \
     --services=${services}
 else
+  #sudo -- sh -c "echo $(echo "$rallyPrivateDNS" | cut -d '-' -f 2,3,4,5|tr '-' '.'|cut -d '.' -f 1,2,3,4) $rallyPrivateDNS >> /etc/hosts"
+  #sudo -- sh -c "echo $(echo "$nodePrivateDNS" | cut -d '-' -f 2,3,4,5|tr '-' '.'|cut -d '.' -f 1,2,3,4) $nodePrivateDNS >> /etc/hosts"
+
   echo "Running couchbase-cli server-add"
   output=""
   while [[ $output != "Server $nodePrivateDNS:8091 added" && ! $output =~ "Node is already part of cluster." ]]
